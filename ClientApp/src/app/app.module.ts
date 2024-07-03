@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-
+import { CallbackComponent } from './components/callback/callback.component';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { HomeComponent } from './components/home/home.component';
@@ -17,6 +17,8 @@ import { StoreModule } from '@ngrx/store';
 import { BookReducer } from './store/book.reducer';
 import { Effect, EffectsModule } from '@ngrx/effects';
 import { BookEffects } from './store/book.effects';
+import { AuthService } from './services/auth.service';
+import { AuthGuard } from './auth.guard';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,7 @@ import { BookEffects } from './store/book.effects';
     NavMenuComponent,
     HomeComponent,
     BooksComponent,
+    CallbackComponent,
     DeleteBookComponent,
     NewBookComponent,
     ShowBookComponent,
@@ -36,16 +39,17 @@ import { BookEffects } from './store/book.effects';
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'books', component: BooksComponent},
-      { path: 'new-book', component: NewBookComponent},
-      { path: 'update-book/:id', component: UpdateBookComponent},
-      { path: 'delete-book/:id', component: DeleteBookComponent},
-      { path: 'show-book/:id', component: ShowBookComponent}
+      { path: 'books', component: BooksComponent, canActivate: [AuthGuard]},
+      { path: 'new-book', component: NewBookComponent, canActivate: [AuthGuard]},
+      { path: 'update-book/:id', component: UpdateBookComponent, canActivate: [AuthGuard]},
+      { path: 'delete-book/:id', component: DeleteBookComponent, canActivate: [AuthGuard]},
+      { path: 'show-book/:id', component: ShowBookComponent, canActivate: [AuthGuard]},
+      { path: 'callback', component: CallbackComponent }
     ]),
     StoreModule.forRoot({ books: BookReducer }),
     EffectsModule.forRoot([BookEffects])
   ],
-  providers: [BookService],
+  providers: [BookService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

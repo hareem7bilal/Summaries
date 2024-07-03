@@ -27,6 +27,7 @@ export class DeleteBookComponent implements OnInit {
 
   deleteBook(id: number){
     this.store.dispatch(new bookActions.DeleteBookAction(id));
+    this.router.navigate(["/books"]);
     // this.service.deleteBook(id).subscribe(data => {
     //   this.router.navigate(["/books"]);
     // })
